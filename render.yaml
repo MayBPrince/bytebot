@@ -10,7 +10,7 @@ services:
   - type: web
     name: bytebot-desktop
     env: docker
-    dockerFilePath: bytebotd/Dockerfile
+    dockerFilePath: packages/bytebotd/Dockerfile
     dockerContext: packages
     plan: standard
     healthCheckPath: /
@@ -22,7 +22,7 @@ services:
   - type: web
     name: bytebot-llm-proxy
     env: docker
-    dockerFilePath: bytebot-llm-proxy/Dockerfile
+    dockerFilePath: packages/bytebot-llm-proxy/Dockerfile
     dockerContext: packages
     plan: starter
     envVars:
@@ -37,7 +37,7 @@ services:
   - type: web
     name: bytebot-agent
     env: docker
-    dockerFilePath: bytebot-agent/Dockerfile
+    dockerFilePath: packages/bytebot-agent/Dockerfile
     dockerContext: packages
     plan: starter
     envVars:
@@ -60,7 +60,7 @@ services:
   - type: web
     name: bytebot-ui
     env: docker
-    dockerFilePath: bytebot-ui/Dockerfile
+    dockerFilePath: packages/bytebot-ui/Dockerfile
     dockerContext: packages
     plan: starter
     envVars:
