@@ -6,8 +6,6 @@ services:
     user: bytebot
     plan: free
 
-  # 2. Bytebot Desktop Service
-  - type: web
   # 2. Bytebot Desktop Service (Private)
   - type: web
     name: bytebot-desktop
