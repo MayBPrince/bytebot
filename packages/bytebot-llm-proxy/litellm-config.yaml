@@ -28,3 +28,8 @@ model_list:
     litellm_params:
       model: gemini/gemini-2.5-flash
       api_key: os.environ/GEMINI_API_KEY
+  # Local Models (Ollama)
+  - model_name: ollama-llama3
+    litellm_params:
+      model: ollama/llama3:latest
+      api_base: http://host.docker.internal:11434

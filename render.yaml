@@ -1,0 +1,72 @@
+services:
+  # 1. Managed PostgreSQL Database
+  - type: database
+    name: bytebot-db
+    databaseName: bytebot
+    user: bytebot
+    plan: free
+
+  # 2. Bytebot Desktop Service
+  - type: web
+    name: bytebot-desktop
+    env: docker
+    dockerFilePath: bytebotd/Dockerfile
+    dockerContext: packages
+    plan: standard
+    healthCheckPath: /
+    envVars:
+      - key: DISPLAY
+        value: ":0"
+
+  # 3. LiteLLM Proxy Service
+  - type: web
+    name: bytebot-llm-proxy
+    env: docker
+    dockerFilePath: bytebot-llm-proxy/Dockerfile
+    dockerContext: packages
+    plan: starter
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # 4. Bytebot Agent Service
+  - type: web
+    name: bytebot-agent
+    env: docker
+    dockerFilePath: bytebot-agent/Dockerfile
+    dockerContext: packages
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bytebot-db
+          property: connectionString
+      - key: BYTEBOT_DESKTOP_BASE_URL
+        value: http://bytebot-desktop:9990
+      - key: BYTEBOT_LLM_PROXY_URL
+        value: http://bytebot-llm-proxy:4000
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # 5. Bytebot UI Service
+  - type: web
+    name: bytebot-ui
+    env: docker
+    dockerFilePath: bytebot-ui/Dockerfile
+    dockerContext: packages
+    plan: starter
+    envVars:
+      - key: BYTEBOT_AGENT_BASE_URL
+        value: http://bytebot-agent:9991
+      - key: BYTEBOT_DESKTOP_VNC_URL
+        value: http://bytebot-desktop:9990/websockify
+      - key: NODE_ENV
+        value: production
