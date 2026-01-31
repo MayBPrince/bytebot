@@ -8,23 +8,28 @@ services:
 
   # 2. Bytebot Desktop Service
   - type: web
+  # 2. Bytebot Desktop Service (Private)
+  - type: web
     name: bytebot-desktop
     env: docker
+    visibility: private
     dockerFilePath: packages/bytebotd/Dockerfile
     dockerContext: packages
     plan: standard
-    healthCheckPath: /
+    healthCheckPath: /vnc
     envVars:
       - key: DISPLAY
         value: ":0"
 
-  # 3. LiteLLM Proxy Service
+  # 3. LiteLLM Proxy Service (Private)
   - type: web
     name: bytebot-llm-proxy
     env: docker
+    visibility: private
     dockerFilePath: packages/bytebot-llm-proxy/Dockerfile
     dockerContext: packages
     plan: starter
+    healthCheckPath: /health/readiness
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
@@ -33,13 +38,15 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
-  # 4. Bytebot Agent Service
+  # 4. Bytebot Agent Service (Private)
   - type: web
     name: bytebot-agent
     env: docker
+    visibility: private
     dockerFilePath: packages/bytebot-agent/Dockerfile
     dockerContext: packages
     plan: starter
+    healthCheckPath: /
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -56,13 +63,15 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
-  # 5. Bytebot UI Service
+  # 5. Bytebot UI Service (Public)
   - type: web
     name: bytebot-ui
     env: docker
+    visibility: public
     dockerFilePath: packages/bytebot-ui/Dockerfile
     dockerContext: packages
     plan: starter
+    healthCheckPath: /
     envVars:
       - key: BYTEBOT_AGENT_BASE_URL
         value: http://bytebot-agent:9991
